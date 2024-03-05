@@ -64,17 +64,31 @@ describe('batch', () => {
     it('batch buyv3 with clones', async () => {
       const { factory, owner, otherAccount } = await loadFixture(deploy)
       const clones = await factory.allClones()
+      // await (
+      //   await factory.batchBuyV3ExactInput(
+      //     10,
+      //     ethers.parseEther('0.0001'),
+      //     '0x2626664c2603336E57B271c5C0b26F421741e481',
+      //     ethers.parseEther('0.0001'),
+      //     '0x4200000000000000000000000000000000000006',
+      //     '0xd9aAEc86B65D86f6A7B5B1b0c42FFA531710b6CA',
+      //     500,
+      //     0,
+      //     { value: ethers.parseEther('0.001') }
+      //   )
+      // ).wait()
+
       await (
-        await factory.batchBuyV3ExactInput(
+        await factory.batchBuyV3(
           10,
-          ethers.parseEther('0.0001'),
+          ethers.parseEther('0.01'),
           '0x2626664c2603336E57B271c5C0b26F421741e481',
-          ethers.parseEther('0.0001'),
+          ethers.parseUnits('10', 6),
           '0x4200000000000000000000000000000000000006',
           '0xd9aAEc86B65D86f6A7B5B1b0c42FFA531710b6CA',
           500,
-          0,
-          { value: ethers.parseEther('0.001') }
+          ethers.parseEther('0.01'),
+          { value: ethers.parseEther('0.1') }
         )
       ).wait()
 
@@ -101,24 +115,24 @@ describe('batch', () => {
       //   )
       // ).wait()
 
-      // await (
-      //   await factory.withdrawAllToken(
-      //     '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
-      //     owner.address
-      //   )
-      // ).wait()
+      await (
+        await factory.withdrawAllToken(
+          '0xd9aAEc86B65D86f6A7B5B1b0c42FFA531710b6CA',
+          owner.address
+        )
+      ).wait()
 
-      // await (await factory.withdrawAllETH(owner.address)).wait()
+      await (await factory.withdrawAllETH(owner.address)).wait()
 
-      // const USDC = new ethers.Contract(
-      //   '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
-      //   ['function balanceOf(address) external view returns (uint256)'],
-      //   owner
-      // )
+      const USDC = new ethers.Contract(
+        '0xd9aAEc86B65D86f6A7B5B1b0c42FFA531710b6CA',
+        ['function balanceOf(address) external view returns (uint256)'],
+        owner
+      )
 
-      // expect(await USDC.balanceOf(owner.address)).to.equal(
-      //   ethers.parseUnits('0.1', 6)
-      // )
+      expect(await USDC.balanceOf(owner.address)).to.equal(
+        ethers.parseUnits('100', 6)
+      )
     })
   })
 })
