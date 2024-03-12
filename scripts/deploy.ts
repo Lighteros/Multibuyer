@@ -2,7 +2,7 @@ import { ethers } from 'hardhat'
 
 async function main() {
   const [signer] = await ethers.getSigners()
-  console.log(await signer.provider.getBalance(signer.address))
+  console.log(await signer.provider.getBalance(signer.address), signer.address)
 
   const buyerFactory = await ethers.getContractFactory('Buyer')
   const buyer = await buyerFactory.deploy()

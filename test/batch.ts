@@ -30,20 +30,20 @@ describe('batch', () => {
       await (
         await factory.batchBuyV2(
           10,
-          ethers.parseEther('0.001'),
-          '0x6BDED42c6DA8FBf0d2bA55B2fa120C5e0c8D7891',
-          ethers.parseUnits('0.01', 6),
+          ethers.parseEther('0.002'),
+          '0x4752ba5dbc23f44d87826276bf6fd6b1c372ad24',
+          ethers.parseUnits('1', 9),
           [
             '0x4200000000000000000000000000000000000006',
-            '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
+            '0xB1225765D5A1a8a956300320Df25e9D033709346',
           ],
-          { value: ethers.parseEther('0.01') }
+          { value: ethers.parseEther('0.02') }
         )
       ).wait()
 
       await (
         await factory.withdrawAllToken(
-          '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
+          '0xB1225765D5A1a8a956300320Df25e9D033709346',
           owner.address
         )
       ).wait()
@@ -51,46 +51,46 @@ describe('batch', () => {
       await (await factory.withdrawAllETH(owner.address)).wait()
 
       const USDC = new ethers.Contract(
-        '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
+        '0xB1225765D5A1a8a956300320Df25e9D033709346',
         ['function balanceOf(address) external view returns (uint256)'],
         owner
       )
 
       expect(await USDC.balanceOf(owner.address)).to.equal(
-        ethers.parseUnits('0.1', 6)
+        ethers.parseUnits('10', 9)
       )
     })
 
     it('batch buyv3 with clones', async () => {
       const { factory, owner, otherAccount } = await loadFixture(deploy)
       const clones = await factory.allClones()
+      await (
+        await factory.batchBuyV3ExactInput(
+          5,
+          ethers.parseEther('0.0001'),
+          '0x2626664c2603336E57B271c5C0b26F421741e481',
+          ethers.parseEther('0.0001'),
+          '0x4200000000000000000000000000000000000006',
+          '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
+          3000,
+          0,
+          { value: ethers.parseEther('0.0005') }
+        )
+      ).wait()
+
       // await (
-      //   await factory.batchBuyV3ExactInput(
+      //   await factory.batchBuyV3(
       //     10,
-      //     ethers.parseEther('0.0001'),
+      //     ethers.parseEther('0.01'),
       //     '0x2626664c2603336E57B271c5C0b26F421741e481',
-      //     ethers.parseEther('0.0001'),
+      //     ethers.parseUnits('10', 6),
       //     '0x4200000000000000000000000000000000000006',
       //     '0xd9aAEc86B65D86f6A7B5B1b0c42FFA531710b6CA',
       //     500,
-      //     0,
-      //     { value: ethers.parseEther('0.001') }
+      //     ethers.parseEther('0.01'),
+      //     { value: ethers.parseEther('0.1') }
       //   )
       // ).wait()
-
-      await (
-        await factory.batchBuyV3(
-          10,
-          ethers.parseEther('0.01'),
-          '0x2626664c2603336E57B271c5C0b26F421741e481',
-          ethers.parseUnits('10', 6),
-          '0x4200000000000000000000000000000000000006',
-          '0xd9aAEc86B65D86f6A7B5B1b0c42FFA531710b6CA',
-          500,
-          ethers.parseEther('0.01'),
-          { value: ethers.parseEther('0.1') }
-        )
-      ).wait()
 
       // const router = new ethers.Contract(
       //   '0x2626664c2603336E57B271c5C0b26F421741e481',
